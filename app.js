@@ -152,28 +152,70 @@ function createItemCard(item) {
     const cartItem = cart.find(ci => ci.id === item.id);
     const quantity = cartItem ? cartItem.quantity : 0;
     
-    card.innerHTML = `
-        <div class="item-header">
-            <div>
-                <div class="item-name">${item.name}</div>
-                <div class="item-price">${item.priceEUR} EUR / ${item.priceCZK} CZK</div>
-            </div>
-        </div>
-        <div class="item-controls">
-            <div class="quantity-controls">
-                <button onclick="updateQuantity(${item.id}, ${quantity - 1})">-</button>
-                <span class="quantity">${quantity}</span>
-                <button onclick="updateQuantity(${item.id}, ${quantity + 1})">+</button>
-            </div>
-            ${currentCategory === 'gifts' ? '' : `
-                <div class="gift-checkbox">
-                    <input type="checkbox" id="gift-${item.id}" ${cartItem?.isGift ? 'checked' : ''} 
-                           onchange="toggleGift(${item.id})">
-                    <label for="gift-${item.id}">Dárek</label>
+    // Special handling for City Tax
+    if (item.name.includes('City Tax')) {
+        const persons = cartItem?.persons || 1;
+        const nights = cartItem?.nights || 1;
+        const totalPrice = item.priceEUR * persons * nights;
+        
+        card.innerHTML = `
+            <div class="item-header">
+                <div>
+                    <div class="item-name">${item.name}</div>
+                    <div class="item-price">${item.priceEUR} EUR/person/night</div>
+                    <div class="city-tax-total">Total: ${totalPrice.toFixed(2)} EUR (${persons} × ${nights} × ${item.priceEUR}€)</div>
                 </div>
-            `}
-        </div>
-    `;
+            </div>
+            <div class="item-controls city-tax-controls">
+                <div class="city-tax-inputs">
+                    <div class="input-group">
+                        <label>Persons:</label>
+                        <div class="quantity-controls compact">
+                            <button onclick="updateCityTaxPersons(${item.id}, ${persons - 1})">-</button>
+                            <span class="quantity">${persons}</span>
+                            <button onclick="updateCityTaxPersons(${item.id}, ${persons + 1})">+</button>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Nights:</label>
+                        <div class="quantity-controls compact">
+                            <button onclick="updateCityTaxNights(${item.id}, ${nights - 1})">-</button>
+                            <span class="quantity">${nights}</span>
+                            <button onclick="updateCityTaxNights(${item.id}, ${nights + 1})">+</button>
+                        </div>
+                    </div>
+                </div>
+                <button class="${quantity > 0 ? 'remove-btn' : 'add-btn'}" 
+                        onclick="${quantity > 0 ? `updateQuantity(${item.id}, 0)` : `addCityTax(${item.id})`}">
+                    ${quantity > 0 ? 'Remove' : 'Add to Cart'}
+                </button>
+            </div>
+        `;
+    } else {
+        // Regular items
+        card.innerHTML = `
+            <div class="item-header">
+                <div>
+                    <div class="item-name">${item.name}</div>
+                    <div class="item-price">${item.priceEUR} EUR / ${item.priceCZK} CZK</div>
+                </div>
+            </div>
+            <div class="item-controls">
+                <div class="quantity-controls">
+                    <button onclick="updateQuantity(${item.id}, ${quantity - 1}, false)">-</button>
+                    <span class="quantity">${quantity}</span>
+                    <button onclick="updateQuantity(${item.id}, ${quantity + 1}, true)">+</button>
+                </div>
+                ${currentCategory === 'gifts' ? '' : `
+                    <div class="gift-checkbox">
+                        <input type="checkbox" id="gift-${item.id}" ${cartItem?.isGift ? 'checked' : ''} 
+                               onchange="toggleGift(${item.id})">
+                        <label for="gift-${item.id}">Dárek</label>
+                    </div>
+                `}
+            </div>
+        `;
+    }
     
     return card;
 }
