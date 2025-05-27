@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0a0a0a">
+    <title>Villa Orders</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+</head>
+<body>
+    <div class="app-container">
+        <div id="villa-select" class="screen active">
+            <div class="hero-section">
+                <div class="animated-bg"></div>
+                <h1 class="glitch" data-text="VILLA ORDERS">VILLA ORDERS</h1>
+                <p class="subtitle">Premium Order Management</p>
+            </div>
+            
+            <div class="villa-cards">
+                <div class="villa-card glass-card" onclick="selectVilla('The Little Castle')" data-tilt>
+                    <div class="card-glow"></div>
+                    <div class="card-content">
+                        <div class="villa-icon">🏰</div>
+                        <h2>The Little Castle</h2>
+                        <div class="card-shine"></div>
+                    </div>
+                </div>
+                
+                <div class="villa-card glass-card" onclick="selectVilla('Amazing Villa')" data-tilt>
+                    <div class="card-glow"></div>
+                    <div class="card-content">
+                        <div class="villa-icon">✨</div>
+                        <h2>Amazing Villa</h2>
+                        <div class="card-shine"></div>
+                    </div>
+                </div>
+                
+                <div class="villa-card glass-card" onclick="selectVilla('Oh Yeah Villa')" data-tilt>
+                    <div class="card-glow"></div>
+                    <div class="card-content">
+                        <div class="villa-icon">🎉</div>
+                        <h2>Oh Yeah Villa</h2>
+                        <div class="card-shine"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <a href="inventory.html" class="inventory-link floating-btn">
+                <span class="btn-text">Inventory Management</span>
+                <span class="btn-icon">⚙️</span>
+            </a>
+        </div>
+
+        <div id="order-screen" class="screen">
+            <header class="glass-header">
+                <button class="nav-btn" onclick="backToVillas()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <h2 id="villa-name" class="header-title"></h2>
+                <button class="cart-btn" onclick="showCart()">
+                    <div class="cart-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M9 22C9.55228 22 10 21.5523 10 21C10 20.4477 9.55228 20 9 20C8.44772 20 8 20.4477 8 21C8 21.5523 8.44772 22 9 22Z" fill="currentColor"/>
+                            <path d="M20 22C20.5523 22 21 21.5523 21 21C21 20.4477 20.5523 20 20 20C19.4477 20 19 20.4477 19 21C19 21.5523 19.4477 22 20 22Z" fill="currentColor"/>
+                            <path d="M1 1H5L7.68 14.39C7.77144 14.8504 8.02191 15.264 8.38755 15.5583C8.75318 15.8526 9.2107 16.009 9.68 16H19.4C19.8693 16.009 20.3268 15.8526 20.6925 15.5583C21.0581 15.264 21.3086 14.8504 21.4 14.39L23 6H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span class="cart-badge" id="cart-count">0</span>
+                    </div>
+                </button>
+            </header>
+
+            <div class="tabs-container">
+                <div class="tabs glass-tabs">
+                    <button class="tab active" onclick="showCategory('drinks')">
+                        <span class="tab-icon">🍹</span>
+                        <span>Drinks</span>
+                    </button>
+                    <button class="tab" onclick="showCategory('services')">
+                        <span class="tab-icon">🛎️</span>
+                        <span>Services</span>
+                    </button>
+                    <button class="tab" onclick="showCategory('gifts')">
+                        <span class="tab-icon">🎁</span>
+                        <span>Gifts</span>
+                    </button>
+                    <button class="tab" onclick="showCategory('custom')">
+                        <span class="tab-icon">✏️</span>
+                        <span>Custom</span>
+                    </button>
+                </div>
+                <div class="tab-indicator"></div>
+            </div>
+
+            <div id="items-container" class="items-container"></div>
+
+            <div id="custom-form" class="custom-form glass-form" style="display: none;">
+                <div class="form-group">
+                    <input type="text" id="custom-name" class="modern-input" placeholder=" " required>
+                    <label for="custom-name" class="modern-label">Item Name</label>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <input type="number" id="custom-price-czk" class="modern-input" placeholder=" ">
+                        <label for="custom-price-czk" class="modern-label">Price CZK</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="number" id="custom-price-eur" class="modern-input" placeholder=" " step="0.01">
+                        <label for="custom-price-eur" class="modern-label">Price EUR</label>
+                    </div>
+                </div>
+                <label class="modern-checkbox">
+                    <input type="checkbox" id="custom-gift">
+                    <span class="checkbox-custom"></span>
+                    <span>Mark as Gift</span>
+                </label>
+                <button class="modern-btn primary-btn" onclick="addCustomItem()">
+                    <span>Add Item</span>
+                    <div class="btn-ripple"></div>
+                </button>
+            </div>
+        </div>
+
+        <div id="cart-screen" class="screen">
+            <header class="glass-header">
+                <button class="nav-btn" onclick="backToOrder()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <h2 class="header-title">Order Summary</h2>
+                <div></div>
+            </header>
+
+            <div id="cart-items" class="cart-items"></div>
+
+            <div class="discount-section glass-card">
+                <h3>Apply Discount</h3>
+                <div class="discount-inputs">
+                    <div class="form-group">
+                        <input type="number" id="discount-percent" class="modern-input" placeholder=" ">
+                        <label for="discount-percent" class="modern-label">Discount %</label>
+                    </div>
+                    <span class="or-divider">OR</span>
+                    <div class="form-group">
+                        <input type="number" id="discount-eur" class="modern-input" placeholder=" " step="0.01">
+                        <label for="discount-eur" class="modern-label">Discount EUR</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="summary-card glass-card">
+                <div class="summary-row">
+                    <span>Items Total</span>
+                    <span id="total-items" class="summary-value">0</span>
+                </div>
+                <div class="summary-row">
+                    <span>Gifts</span>
+                    <span id="total-gifts" class="summary-value">0 pcs (0 EUR)</span>
+                </div>
+                <div class="summary-row discount-row">
+                    <span>Discount</span>
+                    <span id="discount-amount" class="summary-value discount">-0 EUR</span>
+                </div>
+                <div class="divider"></div>
+                <div class="summary-row total-row">
+                    <span>Total Amount</span>
+                    <span id="total-price" class="total-value">0 EUR</span>
+                </div>
+            </div>
+
+            <div class="payment-section">
+                <h3>Select Payment Method</h3>
+                <div class="payment-buttons">
+                    <button class="payment-btn cash" onclick="processPayment('cash')">
+                        <span class="payment-icon">💵</span>
+                        <span>Cash</span>
+                    </button>
+                    <button class="payment-btn card" onclick="processPayment('card')">
+                        <span class="payment-icon">💳</span>
+                        <span>Card</span>
+                    </button>
+                    <button class="payment-btn unpaid" onclick="processPayment('unpaid')">
+                        <span class="payment-icon">📋</span>
+                        <span>Unpaid</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="receipt-screen" class="screen">
+            <div class="receipt-container">
+                <div class="receipt glass-receipt">
+                    <div class="receipt-header">
+                        <div class="receipt-logo">✓</div>
+                        <h2>Payment Successful</h2>
+                        <h3 id="receipt-villa"></h3>
+                        <p id="receipt-date"></p>
+                    </div>
+                    
+                    <div class="receipt-body">
+                        <div id="receipt-items"></div>
+                        
+                        <div class="receipt-summary">
+                            <div class="summary-row">
+                                <span>Subtotal</span>
+                                <span id="receipt-subtotal"></span>
+                            </div>
+                            <div class="summary-row" id="receipt-discount-row">
+                                <span>Discount</span>
+                                <span id="receipt-discount" class="discount"></span>
+                            </div>
+                            <div class="divider"></div>
+                            <div class="summary-row total-row">
+                                <span>Total</span>
+                                <span id="receipt-total"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-info">
+                            <span>Payment Method:</span>
+                            <span id="receipt-payment" class="payment-type"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="receipt-actions">
+                    <button class="action-btn share-btn" onclick="shareReceipt()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M18 8C19.6569 8 21 6.65685 21 5C21 3.34315 19.6569 2 18 2C16.3431 2 15 3.34315 15 5C15 5.12548 15.0077 5.24917 15.0227 5.37061L8.08261 9.19813C7.54305 8.46991 6.6931 8 5.75 8C4.23122 8 3 9.23122 3 10.75C3 12.2688 4.23122 13.5 5.75 13.5C6.6931 13.5 7.54305 13.0301 8.08261 12.3019L15.0227 16.1294C15.0077 16.2508 15 16.3745 15 16.5C15 18.1569 16.3431 19.5 18 19.5C19.6569 19.5 21 18.1569 21 16.5C21 14.8431 19.6569 13.5 18 13.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span>Share</span>
+                    </button>
+                    <button class="action-btn pdf-btn" onclick="downloadPDF()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M14 2V8H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span>PDF</span>
+                    </button>
+                    <button class="action-btn new-order-btn" onclick="newOrder()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span>New Order</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0a0a0a">
+    <title>Villa Orders - Inventory</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <div class="app-container">
+        <div class="inventory-screen active">
+            <header class="glass-header">
+                <a href="index.html" class="nav-btn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>
+                <h2 class="header-title">Inventory Management</h2>
+                <button class="nav-btn" onclick="showAddForm()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </header>
+
+            <div class="inventory-actions">
+                <button class="action-glass-btn" onclick="exportInventory()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M7 10L12 15L17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 15V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Export</span>
+                </button>
+                <button class="action-glass-btn" onclick="document.getElementById('import-file').click()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M17 8L12 3L7 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 3V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Import</span>
+                </button>
+                <input type="file" id="import-file" accept=".json" style="display: none;" onchange="importInventory(event)">
+            </div>
+
+            <div class="tabs-container">
+                <div class="tabs glass-tabs">
+                    <button class="tab active" onclick="filterInventory('all')">
+                        <span class="tab-icon">📦</span>
+                        <span>All</span>
+                    </button>
+                    <button class="tab" onclick="filterInventory('drinks')">
+                        <span class="tab-icon">🍹</span>
+                        <span>Drinks</span>
+                    </button>
+                    <button class="tab" onclick="filterInventory('services')">
+                        <span class="tab-icon">🛎️</span>
+                        <span>Services</span>
+                    </button>
+                    <button class="tab" onclick="filterInventory('gifts')">
+                        <span class="tab-icon">🎁</span>
+                        <span>Gifts</span>
+                    </button>
+                </div>
+                <div class="tab-indicator"></div>
+            </div>
+
+            <div id="inventory-list" class="inventory-list"></div>
+
+            <div id="add-form" class="modal" style="display: none;">
+                <div class="modal-overlay" onclick="closeForm()"></div>
+                <div class="modal-content glass-modal">
+                    <div class="modal-header">
+                        <h3>Add / Edit Item</h3>
+                        <button class="close-btn" onclick="closeForm()">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <input type="text" id="item-name" class="modern-input" placeholder=" " required>
+                        <label for="item-name" class="modern-label">Item Name</label>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <input type="number" id="item-price-czk" class="modern-input" placeholder=" ">
+                            <label for="item-price-czk" class="modern-label">Price CZK</label>
+                        </div>
+                        <div class="form-group">
+                            <input type="number" id="item-price-eur" class="modern-input" placeholder=" " step="0.01">
+                            <label for="item-price-eur" class="modern-label">Price EUR</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <select id="item-category" class="modern-select">
+                            <option value="drinks">Drinks</option>
+                            <option value="services">Services</option>
+                            <option value="gifts">Gifts</option>
+                        </select>
+                        <label class="select-label">Category</label>
+                    </div>
+                    
+                    <label class="modern-checkbox">
+                        <input type="checkbox" id="item-active" checked>
+                        <span class="checkbox-custom"></span>
+                        <span>Active in Menu</span>
+                    </label>
+                    
+                    <div class="modal-actions">
+                        <button class="modern-btn secondary-btn" onclick="closeForm()">Cancel</button>
+                        <button class="modern-btn primary-btn" onclick="saveItem()">
+                            <span>Save Item</span>
+                            <div class="btn-ripple"></div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="inventory.js"></script>
+</body>
+</html>

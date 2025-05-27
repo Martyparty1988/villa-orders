@@ -1,0 +1,43 @@
+<svg width="192" height="192" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="192" height="192" rx="42" fill="url(#bg-gradient)"/>
+  
+  <!-- Glass effect overlay -->
+  <rect x="20" y="20" width="152" height="152" rx="32" fill="rgba(255,255,255,0.1)" />
+  
+  <!-- Villa icon -->
+  <g transform="translate(96, 96)">
+    <!-- Building -->
+    <path d="M -40 20 L -40 -10 L -20 -30 L 0 -10 L 0 20 L 20 20 L 20 -10 L 40 -30 L 60 -10 L 60 20 Z" 
+          fill="white" 
+          opacity="0.9"
+          filter="url(#shadow)"/>
+    
+    <!-- Roof -->
+    <path d="M -50 -10 L -20 -40 L 10 -10 M 10 -10 L 40 -40 L 70 -10" 
+          fill="none" 
+          stroke="white" 
+          stroke-width="4" 
+          stroke-linecap="round"
+          opacity="0.9"/>
+    
+    <!-- Door -->
+    <rect x="-10" y="0" width="20" height="20" rx="2" fill="#6366f1" opacity="0.8"/>
+  </g>
+  
+  <!-- Text -->
+  <text x="96" y="140" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="white">
+    VILLA ORDERS
+  </text>
+</svg>
