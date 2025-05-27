@@ -237,4 +237,8 @@ async function importInventory(event) {
 
 initDB().then(() => {
     displayInventory();
+    // Set up tab indicator on first load
+    setTimeout(() => {
+        updateTabIndicator(0);
+    }, 100);
 });
